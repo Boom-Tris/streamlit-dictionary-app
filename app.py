@@ -45,8 +45,8 @@ def export_terms_to_docx(terms):
     doc.add_heading('คำศัพท์', 0)
 
     for term in terms:
-        doc.add_paragraph(f"คำศัพท์: {term[1]}")
-        doc.add_paragraph(f"ความหมาย: {term[2]}")
+        doc.add_paragraph(f"vocabulary: {term[1]}")
+        doc.add_paragraph(f"meaning: {term[2]}")
         doc.add_paragraph("\n")
 
     byte_io = BytesIO()
@@ -153,7 +153,7 @@ def edit_term(id):
     term = cursor.fetchone()
     
     if term:
-        word = st.text_input("คำศัพท์", term[0], max_chars=100)
+        word = st.text_input("คำศัพท์", term[0], max_chars=1000)
         definition = st.text_area("ความหมาย", term[1], height=200)
 
         if st.button('บันทึกการแก้ไข'):
