@@ -112,9 +112,7 @@ def display_terms_page():
                 if st.button(f"ลบ", key=f"delete_{term[0]}"):
                     delete_term(term[0])
                     st.success(f"คำศัพท์ '{term[1]}' ถูกลบแล้ว!")
-                    # แสดงคำศัพท์ที่อัปเดตหลังจากลบ
-                    terms = show_terms(search_term)  # โหลดคำศัพท์ใหม่
-                    display_terms_page()  # รีเฟรชหน้า
+                    st.experimental_rerun()
 
     else:
         st.write("ไม่พบคำศัพท์ที่ค้นหา.")
