@@ -164,6 +164,10 @@ def edit_term(id):
 
 # สร้างเมนูให้ผู้ใช้เลือกหน้า
 def main():
+    if 'last_deleted' in st.session_state:
+        # Reset the session state after deletion
+        del st.session_state.last_deleted
+
     st.sidebar.title("เมนู")
     selection = st.sidebar.selectbox("เลือกหน้า", ["คำศัพท์ทั้งหมด", "เพิ่มคำศัพท์ใหม่"])
 
@@ -172,5 +176,4 @@ def main():
     elif selection == "เพิ่มคำศัพท์ใหม่":
         add_term_page()
 
-if __name__ == '__main__':
     main()
