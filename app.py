@@ -173,5 +173,6 @@ def main():
     elif selection == "เพิ่มคำศัพท์ใหม่":
         add_term_page()
 
-
+# เรียกใช้งานฟังก์ชันหลัก
+if __name__ == "__main__":
     main()
