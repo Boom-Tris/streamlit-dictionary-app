@@ -85,6 +85,7 @@ def search_meaning_from_api(word):
 def display_terms_page():
     st.title('คำศัพท์ทั้งหมด')
 
+    # Handle search term input
     search_term = st.text_input("ค้นหาคำศัพท์", "")
     terms = show_terms(search_term)
     
@@ -108,11 +109,14 @@ def display_terms_page():
                 if st.button(f"แก้ไข", key=f"edit_{term[0]}"):
                     edit_term(term[0])
             with col4:
-                if st.button(f"ลบ", key=f"delete_{term[0]}"):
+                delete_button = st.button(f"ลบ", key=f"delete_{term[0]}")
+                if delete_button:
                     delete_term(term[0])
                     st.success(f"คำศัพท์ '{term[1]}' ถูกลบแล้ว!")
-                    # รีเฟรชหลังจากลบคำศัพท์
-                    st.experimental_rerun() 
+                    # Use session state to reflect the changes after deletion
+                    if 'last_deleted' not in st.session_state:
+                        st.session_state.last_deleted = term[0]
+                    st.experimental_rerun()  # Trigger a rerun after deletion
 
     else:
         st.write("ไม่พบคำศัพท์ที่ค้นหา.")
