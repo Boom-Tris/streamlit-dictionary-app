@@ -85,10 +85,10 @@ def search_meaning_from_api(word):
 def display_terms_page():
     st.title('คำศัพท์ทั้งหมด')
 
-    # Handle search term input
+    # การค้นหาคำศัพท์
     search_term = st.text_input("ค้นหาคำศัพท์", "")
     terms = show_terms(search_term)
-    
+
     if terms:
         if st.button("ส่งออกเป็นไฟล์ .docx"):
             byte_io = export_terms_to_docx(terms)
@@ -113,10 +113,10 @@ def display_terms_page():
                 if delete_button:
                     delete_term(term[0])
                     st.success(f"คำศัพท์ '{term[1]}' ถูกลบแล้ว!")
-                    # Use session state to reflect the changes after deletion
-                    if 'last_deleted' not in st.session_state:
-                        st.session_state.last_deleted = term[0]
-                    st.experimental_rerun()  # Trigger a rerun after deletion
+                    
+                    # ติดตามคำที่ถูกลบใน session state
+                    st.session_state.deleted_term_id = term[0]
+                    st.experimental_rerun()  # กระตุ้นให้แอปทำงานใหม่เพื่ออัปเดต UI
 
     else:
         st.write("ไม่พบคำศัพท์ที่ค้นหา.")
