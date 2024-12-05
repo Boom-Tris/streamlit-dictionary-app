@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS terms (
     lecture TEXT NOT NULL
 )
 ''')
-cursor.execute("INSERT INTO terms (word, definition, lecture) VALUES (?, ?, ?)", (word, definition, lecture))
+
 conn.commit()
 
 # ฟังก์ชันสำหรับการแสดงคำศัพท์ทั้งหมด
