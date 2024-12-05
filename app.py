@@ -9,12 +9,7 @@ conn = sqlite3.connect('dictionary.db')
 cursor = conn.cursor()
 
 # สร้างตารางถ้ายังไม่มี
-cursor.execute('''CREATE TABLE IF NOT EXISTS terms (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    word TEXT NOT NULL,
-                    definition TEXT NOT NULL,
-                    lecture TEXT DEFAULT "Lecture 1")''')
-conn.commit()
+
 
 # ฟังก์ชันสำหรับการแสดงคำศัพท์ทั้งหมด
 def show_terms(search_term="", lecture_filter=""):
