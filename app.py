@@ -127,6 +127,7 @@ def display_terms_page():
 
 # หน้าเพิ่มคำศัพท์ใหม่
 # หน้าเพิ่มคำศัพท์ใหม่
+# ฟังก์ชันเพิ่มคำศัพท์ใหม่
 def add_term_page():
     st.title('เพิ่มคำศัพท์ใหม่')
 
@@ -142,6 +143,14 @@ def add_term_page():
     # ตัวเลือกวิธีการกรอกความหมาย
     option = st.radio("เลือกวิธีการกรอกความหมาย", ["กรอกความหมายเอง", "ใช้ความหมายจาก API"])
     
+    # ตรวจสอบคำศัพท์ซ้ำ
+    if word:
+        cursor.execute("SELECT * FROM terms WHERE word = ?", (word,))
+        existing_term = cursor.fetchone()
+        if existing_term:
+            st.error(f"คำศัพท์ '{word}' มีอยู่แล้วในฐานข้อมูล")
+            return  # หยุดการดำเนินการเมื่อพบคำศัพท์ซ้ำ
+
     if option == "กรอกความหมายเอง":
         # ช่องป้อนความหมาย
         definition = st.text_area("ความหมาย:")
@@ -162,6 +171,7 @@ def add_term_page():
             if st.button('บันทึกคำศัพท์นี้'):
                 add_term(word, definition, lecture)
                 st.success(f"เพิ่มคำศัพท์ '{word}' สำเร็จ!")
+
 
 
 # สร้างเมนูให้ผู้ใช้เลือกหน้า
