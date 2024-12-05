@@ -126,15 +126,26 @@ def display_terms_page():
         st.write("ไม่พบคำศัพท์ที่ค้นหา.")
 
 # หน้าเพิ่มคำศัพท์ใหม่
+# หน้าเพิ่มคำศัพท์ใหม่
 def add_term_page():
     st.title('เพิ่มคำศัพท์ใหม่')
-    
+
+    # ช่องป้อนคำศัพท์
     word = st.text_input("คำศัพท์:")
-    lecture = st.selectbox("เลือก Lecture:", ["Lecture 1", "Lecture 2", "Lecture 3", "Lecture 4", "Lecture 5", "Lecture 6"])
+
+    # ตัวเลือก Lecture
+    lecture = st.selectbox(
+        "เลือก Lecture:",
+        ["Lecture 1", "Lecture 2", "Lecture 3", "Lecture 4", "Lecture 5", "Lecture 6"]
+    )
+
+    # ตัวเลือกวิธีการกรอกความหมาย
     option = st.radio("เลือกวิธีการกรอกความหมาย", ["กรอกความหมายเอง", "ใช้ความหมายจาก API"])
     
     if option == "กรอกความหมายเอง":
+        # ช่องป้อนความหมาย
         definition = st.text_area("ความหมาย:")
+        # ปุ่มบันทึก
         if st.button('บันทึก'):
             if word and definition:
                 add_term(word, definition, lecture)
@@ -144,27 +155,14 @@ def add_term_page():
     
     elif option == "ใช้ความหมายจาก API":
         if word:
+            # เรียกใช้ API
             definition = search_meaning_from_api(word)
             st.write(f"ความหมายจาก API: {definition}")
+            # ปุ่มบันทึก
             if st.button('บันทึกคำศัพท์นี้'):
                 add_term(word, definition, lecture)
                 st.success(f"เพิ่มคำศัพท์ '{word}' สำเร็จ!")
 
-# หน้าแก้ไขคำศัพท์
-def edit_term(id):
-    cursor.execute("SELECT word, definition, lecture FROM terms WHERE id = ?", (id,))
-    term = cursor.fetchone()
-    
-    if term:
-        word = st.text_input("คำศัพท์", term[0])
-        definition = st.text_area("ความหมาย", term[1])
-        lecture = st.selectbox("Lecture:", ["Lecture 1", "Lecture 2", "Lecture 3", "Lecture 4", "Lecture 5", "Lecture 6"], index=["Lecture 1", "Lecture 2", "Lecture 3", "Lecture 4", "Lecture 5", "Lecture 6"].index(term[2]))
-
-        if st.button('บันทึกการแก้ไข'):
-            update_term(id, word, definition, lecture)
-            st.success(f"คำศัพท์ '{word}' ได้รับการแก้ไขแล้ว!")
-    else:
-        st.error("ไม่พบคำศัพท์ที่เลือก.")
 
 # สร้างเมนูให้ผู้ใช้เลือกหน้า
 def main():
