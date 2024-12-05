@@ -3,6 +3,8 @@ import sqlite3
 from docx import Document
 from io import BytesIO
 import requests
+import shutil
+import os
 
 # เชื่อมต่อกับฐานข้อมูล SQLite
 conn = sqlite3.connect('dictionary.db')
@@ -19,6 +21,22 @@ CREATE TABLE IF NOT EXISTS terms (
 ''')
 
 conn.commit()
+
+# ฟังก์ชันสำหรับการสำรองข้อมูล
+def backup_database():
+    backup_file = 'dictionary_backup.db'
+    shutil.copy('dictionary.db', backup_file)
+    st.success(f"สำรองข้อมูลไปยัง {backup_file} สำเร็จ!")
+
+# ฟังก์ชันสำหรับการคืนค่าข้อมูลจากไฟล์สำรอง
+def restore_from_backup():
+    if os.path.exists('dictionary_backup.db'):
+        shutil.copy('dictionary_backup.db', 'dictionary.db')
+        st.success("ข้อมูลจากไฟล์สำรองได้รับการคืนค่าแล้ว!")
+        return True
+    else:
+        st.error("ไม่พบไฟล์สำรองข้อมูล")
+        return False
 
 # ฟังก์ชันสำหรับการแสดงคำศัพท์ทั้งหมด
 def show_terms(search_term="", lecture_filter=""):
@@ -41,16 +59,19 @@ def show_terms(search_term="", lecture_filter=""):
 def add_term(word, definition, lecture="Lecture 1"):
     cursor.execute("INSERT INTO terms (word, definition, lecture) VALUES (?, ?, ?)", (word, definition, lecture))
     conn.commit()
+    backup_database()  # สำรองข้อมูลหลังจาก commit
 
 # ฟังก์ชันสำหรับการแก้ไขคำศัพท์
 def update_term(id, word, definition, lecture):
     cursor.execute("UPDATE terms SET word = ?, definition = ?, lecture = ? WHERE id = ?", (word, definition, lecture, id))
     conn.commit()
+    backup_database()  # สำรองข้อมูลหลังจาก commit
 
 # ฟังก์ชันสำหรับการลบคำศัพท์
 def delete_term(id):
     cursor.execute("DELETE FROM terms WHERE id = ?", (id,))
     conn.commit()
+    backup_database()  # สำรองข้อมูลหลังจาก commit
 
 # ฟังก์ชันเพื่อสร้างไฟล์ .docx และส่งออก
 def export_terms_to_docx(terms):
@@ -130,8 +151,6 @@ def display_terms_page():
         st.write("ไม่พบคำศัพท์ที่ค้นหา.")
 
 # หน้าเพิ่มคำศัพท์ใหม่
-# หน้าเพิ่มคำศัพท์ใหม่
-# ฟังก์ชันเพิ่มคำศัพท์ใหม่
 def add_term_page():
     st.title('เพิ่มคำศัพท์ใหม่')
 
@@ -175,8 +194,6 @@ def add_term_page():
             if st.button('บันทึกคำศัพท์นี้'):
                 add_term(word, definition, lecture)
                 st.success(f"เพิ่มคำศัพท์ '{word}' สำเร็จ!")
-
-
 
 # สร้างเมนูให้ผู้ใช้เลือกหน้า
 def main():
